@@ -1,40 +1,40 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
+  engineType = "binary"
 }
 
 datasource db {
   provider = "mysql"
-
+   url      = env("DATABASE_URL")
 }
 
 model User {
-  id                    Int       @id @default(autoincrement())
-  nombre                String    @db.VarChar(100)
-  email                 String    @unique @db.VarChar(150)
-  passwordHash          String    @map("password_hash") @db.VarChar(255)
-  fotoPerfil            String?   @map("foto_perfil") @db.VarChar(500)
-  telefono              String?   @db.VarChar(20)
-  colonia               String?   @db.VarChar(150)
-  ciudad                String    @default("Cancún") @db.VarChar(100)
-  bio                   String?   @db.Text
-  reputacionScore       Decimal   @default(0.00) @map("reputacion_score") @db.Decimal(3, 2)
-  truequesCompletados   Int       @default(0) @map("trueques_completados")
-  rol                   UserRole  @default(usuario)
-  verificado            Boolean   @default(false)
-  ineUrl                String?   @map("ine_url") @db.VarChar(500)
-  createdAt             DateTime  @default(now()) @map("created_at")
-  updatedAt             DateTime  @updatedAt @map("updated_at")
-
-  publicaciones           Publicacion[]
-  pujas                   Puja[]
-  calificacionesDadas     Calificacion[]   @relation("CalificadorRelation")
-  calificacionesRecibidas Calificacion[]   @relation("CalificadoRelation")
+  id                      Int            @id @default(autoincrement())
+  nombre                  String         @db.VarChar(100)
+  email                   String         @unique @db.VarChar(150)
+  passwordHash            String         @map("password_hash") @db.VarChar(255)
+  fotoPerfil              String?        @map("foto_perfil") @db.VarChar(500)
+  telefono                String?        @db.VarChar(20)
+  colonia                 String?        @db.VarChar(150)
+  ciudad                  String         @default("Cancún") @db.VarChar(100)
+  bio                     String?        @db.Text
+  reputacionScore         Decimal        @default(0.00) @map("reputacion_score") @db.Decimal(3, 2)
+  truequesCompletados     Int            @default(0) @map("trueques_completados")
+  rol                     UserRole       @default(usuario)
+  verificado              Boolean        @default(false)
+  ineUrl                  String?        @map("ine_url") @db.VarChar(500)
+  createdAt               DateTime       @default(now()) @map("created_at")
+  updatedAt               DateTime       @updatedAt @map("updated_at")
+  calificacionesRecibidas Calificacion[] @relation("CalificadoRelation")
+  calificacionesDadas     Calificacion[] @relation("CalificadorRelation")
   mensajesEnviados        Mensaje[]
   notificaciones          Notificacion[]
-  reportesRealizados      Reporte[]        @relation("ReportadorRelation")
-  reportesRecibidos       Reporte[]        @relation("ReportadoRelation")
-  truequesComoPublicador  Trueque[]        @relation("PublicadorRelation")
-  truequesComoOfertante   Trueque[]        @relation("OfertanteRelation")
+  publicaciones           Publicacion[]
+  pujas                   Puja[]
+  reportesRealizados      Reporte[]      @relation("ReportadorRelation")
+  reportesRecibidos       Reporte[]      @relation("ReportadoRelation")
+  truequesComoOfertante   Trueque[]      @relation("OfertanteRelation")
+  truequesComoPublicador  Trueque[]      @relation("PublicadorRelation")
 
   @@index([email])
   @@index([colonia])
@@ -42,46 +42,39 @@ model User {
   @@map("users")
 }
 
-enum UserRole {
-  usuario
-  admin
-}
-
 model Categoria {
-  id            Int       @id @default(autoincrement())
-  nombre        String    @unique @db.VarChar(100)
-  descripcion   String?   @db.VarChar(255)
-  icono         String?   @db.VarChar(50)
-  activa        Boolean   @default(true)
-  createdAt     DateTime  @default(now()) @map("created_at")
-
+  id            Int           @id @default(autoincrement())
+  nombre        String        @unique @db.VarChar(100)
+  descripcion   String?       @db.VarChar(255)
+  icono         String?       @db.VarChar(50)
+  activa        Boolean       @default(true)
+  createdAt     DateTime      @default(now()) @map("created_at")
   publicaciones Publicacion[]
 
   @@map("categorias")
 }
 
 model Publicacion {
-  id                    Int                  @id @default(autoincrement())
-  usuarioId             Int                  @map("usuario_id")
-  categoriaId           Int                  @map("categoria_id")
-  titulo                String               @db.VarChar(200)
-  descripcion           String               @db.Text
+  id                    Int                   @id @default(autoincrement())
+  usuarioId             Int                   @map("usuario_id")
+  categoriaId           Int                   @map("categoria_id")
+  titulo                String                @db.VarChar(200)
+  descripcion           String                @db.Text
   tipo                  PublicacionTipo
-  estadoArticulo        EstadoArticulo?      @map("estado_articulo")
-  queBuscaACambio       String?              @map("que_busca_a_cambio") @db.Text
-  modalidad             Modalidad            @default(presencial)
-  disponibilidadHoraria String?              @map("disponibilidad_horaria") @db.VarChar(255)
-  estadoPublicacion     EstadoPublicacion    @default(activa) @map("estado_publicacion")
-  fechaVigencia         DateTime?            @map("fecha_vigencia") @db.Date
-  createdAt             DateTime             @default(now()) @map("created_at")
-  updatedAt             DateTime             @updatedAt @map("updated_at")
-
-  usuario               User                 @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
-  categoria             Categoria            @relation(fields: [categoriaId], references: [id], onDelete: Restrict)
+  estadoArticulo        EstadoArticulo?       @map("estado_articulo")
+  queBuscaACambio       String?               @map("que_busca_a_cambio") @db.Text
+  modalidad             Modalidad             @default(presencial)
+  disponibilidadHoraria String?               @map("disponibilidad_horaria") @db.VarChar(255)
+  estadoPublicacion     EstadoPublicacion     @default(activa) @map("estado_publicacion")
+  fechaVigencia         DateTime?             @map("fecha_vigencia") @db.Date
+  createdAt             DateTime              @default(now()) @map("created_at")
+  updatedAt             DateTime              @updatedAt @map("updated_at")
   imagenes              ImagenPublicacion[]
   etiquetas             PublicacionEtiqueta[]
-  pujas                 Puja[]
+  categoria             Categoria             @relation(fields: [categoriaId], references: [id])
+  usuario               User                  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
   pujaItems             PujaItem[]
+  pujas                 Puja[]
   trueques              Trueque[]
 
   @@index([usuarioId])
@@ -90,6 +83,173 @@ model Publicacion {
   @@index([estadoPublicacion])
   @@index([createdAt])
   @@map("publicaciones")
+}
+
+model ImagenPublicacion {
+  id            Int         @id @default(autoincrement())
+  publicacionId Int         @map("publicacion_id")
+  url           String      @db.VarChar(500)
+  orden         Int         @default(0)
+  createdAt     DateTime    @default(now()) @map("created_at")
+  publicacion   Publicacion @relation(fields: [publicacionId], references: [id], onDelete: Cascade)
+
+  @@index([publicacionId])
+  @@map("imagenes_publicacion")
+}
+
+model Etiqueta {
+  id            Int                   @id @default(autoincrement())
+  nombre        String                @unique @db.VarChar(50)
+  createdAt     DateTime              @default(now()) @map("created_at")
+  publicaciones PublicacionEtiqueta[]
+
+  @@map("etiquetas")
+}
+
+model PublicacionEtiqueta {
+  publicacionId Int         @map("publicacion_id")
+  etiquetaId    Int         @map("etiqueta_id")
+  etiqueta      Etiqueta    @relation(fields: [etiquetaId], references: [id], onDelete: Cascade)
+  publicacion   Publicacion @relation(fields: [publicacionId], references: [id], onDelete: Cascade)
+
+  @@id([publicacionId, etiquetaId])
+  @@index([etiquetaId], map: "publicacion_etiquetas_etiqueta_id_fkey")
+  @@map("publicacion_etiquetas")
+}
+
+model Puja {
+  id                 Int         @id @default(autoincrement())
+  publicacionId      Int         @map("publicacion_id")
+  usuarioOfertanteId Int         @map("usuario_ofertante_id")
+  mensaje            String?     @db.Text
+  estado             EstadoPuja  @default(pendiente)
+  createdAt          DateTime    @default(now()) @map("created_at")
+  updatedAt          DateTime    @updatedAt @map("updated_at")
+  items              PujaItem[]
+  publicacion        Publicacion @relation(fields: [publicacionId], references: [id], onDelete: Cascade)
+  usuarioOfertante   User        @relation(fields: [usuarioOfertanteId], references: [id], onDelete: Cascade)
+  trueque            Trueque?
+
+  @@index([publicacionId])
+  @@index([usuarioOfertanteId])
+  @@index([estado])
+  @@map("pujas")
+}
+
+model PujaItem {
+  id                    Int          @id @default(autoincrement())
+  pujaId                Int          @map("puja_id")
+  publicacionOfrecidaId Int?         @map("publicacion_ofrecida_id")
+  descripcionServicio   String?      @map("descripcion_servicio") @db.Text
+  tipoOferta            TipoOferta   @map("tipo_oferta")
+  publicacionOfrecida   Publicacion? @relation(fields: [publicacionOfrecidaId], references: [id])
+  puja                  Puja         @relation(fields: [pujaId], references: [id], onDelete: Cascade)
+
+  @@index([pujaId])
+  @@index([publicacionOfrecidaId], map: "puja_items_publicacion_ofrecida_id_fkey")
+  @@map("puja_items")
+}
+
+model Trueque {
+  id                  Int            @id @default(autoincrement())
+  publicacionId       Int            @map("publicacion_id")
+  pujaGanadoraId      Int            @unique @map("puja_ganadora_id")
+  usuarioPublicadorId Int            @map("usuario_publicador_id")
+  usuarioOfertanteId  Int            @map("usuario_ofertante_id")
+  estado              EstadoTrueque  @default(acordado)
+  fechaAcuerdo        DateTime       @default(now()) @map("fecha_acuerdo")
+  fechaCompletado     DateTime?      @map("fecha_completado")
+  createdAt           DateTime       @default(now()) @map("created_at")
+  calificaciones      Calificacion[]
+  mensajes            Mensaje[]
+  publicacion         Publicacion    @relation(fields: [publicacionId], references: [id], onDelete: Cascade)
+  pujaGanadora        Puja           @relation(fields: [pujaGanadoraId], references: [id], onDelete: Cascade)
+  usuarioOfertante    User           @relation("OfertanteRelation", fields: [usuarioOfertanteId], references: [id], onDelete: Cascade)
+  usuarioPublicador   User           @relation("PublicadorRelation", fields: [usuarioPublicadorId], references: [id], onDelete: Cascade)
+
+  @@index([publicacionId])
+  @@index([estado])
+  @@index([usuarioPublicadorId])
+  @@index([usuarioOfertanteId])
+  @@map("trueques")
+}
+
+model Calificacion {
+  id            Int      @id @default(autoincrement())
+  truequeId     Int      @map("trueque_id")
+  calificadorId Int      @map("calificador_id")
+  calificadoId  Int      @map("calificado_id")
+  estrellas     Int      @db.TinyInt
+  comentario    String?  @db.Text
+  createdAt     DateTime @default(now()) @map("created_at")
+  calificado    User     @relation("CalificadoRelation", fields: [calificadoId], references: [id], onDelete: Cascade)
+  calificador   User     @relation("CalificadorRelation", fields: [calificadorId], references: [id], onDelete: Cascade)
+  trueque       Trueque  @relation(fields: [truequeId], references: [id], onDelete: Cascade)
+
+  @@unique([truequeId, calificadorId])
+  @@index([calificadoId])
+  @@index([calificadorId], map: "calificaciones_calificador_id_fkey")
+  @@map("calificaciones")
+}
+
+model Mensaje {
+  id        Int      @id @default(autoincrement())
+  truequeId Int      @map("trueque_id")
+  emisorId  Int      @map("emisor_id")
+  contenido String   @db.Text
+  leido     Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+  emisor    User     @relation(fields: [emisorId], references: [id], onDelete: Cascade)
+  trueque   Trueque  @relation(fields: [truequeId], references: [id], onDelete: Cascade)
+
+  @@index([truequeId])
+  @@index([createdAt])
+  @@index([truequeId, leido])
+  @@index([emisorId], map: "mensajes_emisor_id_fkey")
+  @@map("mensajes")
+}
+
+model Notificacion {
+  id         Int              @id @default(autoincrement())
+  usuarioId  Int              @map("usuario_id")
+  tipo       TipoNotificacion
+  titulo     String           @db.VarChar(200)
+  contenido  String?          @db.Text
+  urlDestino String?          @map("url_destino") @db.VarChar(500)
+  leida      Boolean          @default(false)
+  createdAt  DateTime         @default(now()) @map("created_at")
+  usuario    User             @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([usuarioId])
+  @@index([usuarioId, leida])
+  @@index([createdAt])
+  @@map("notificaciones")
+}
+
+model Reporte {
+  id                     Int           @id @default(autoincrement())
+  reportadorId           Int           @map("reportador_id")
+  usuarioReportadoId     Int?          @map("usuario_reportado_id")
+  publicacionReportadaId Int?          @map("publicacion_reportada_id")
+  tipo                   TipoReporte
+  motivo                 String        @db.Text
+  estado                 EstadoReporte @default(pendiente)
+  resolucion             String?       @db.Text
+  createdAt              DateTime      @default(now()) @map("created_at")
+  updatedAt              DateTime      @updatedAt @map("updated_at")
+  reportador             User          @relation("ReportadorRelation", fields: [reportadorId], references: [id], onDelete: Cascade)
+  usuarioReportado       User?         @relation("ReportadoRelation", fields: [usuarioReportadoId], references: [id])
+
+  @@index([estado])
+  @@index([tipo])
+  @@index([reportadorId], map: "reportes_reportador_id_fkey")
+  @@index([usuarioReportadoId], map: "reportes_usuario_reportado_id_fkey")
+  @@map("reportes")
+}
+
+enum UserRole {
+  usuario
+  admin
 }
 
 enum PublicacionTipo {
@@ -114,60 +274,6 @@ enum EstadoPublicacion {
   cerrada
 }
 
-model ImagenPublicacion {
-  id              Int       @id @default(autoincrement())
-  publicacionId   Int       @map("publicacion_id")
-  url             String    @db.VarChar(500)
-  orden           Int       @default(0)
-  createdAt       DateTime  @default(now()) @map("created_at")
-
-  publicacion     Publicacion @relation(fields: [publicacionId], references: [id], onDelete: Cascade)
-
-  @@index([publicacionId])
-  @@map("imagenes_publicacion")
-}
-
-model Etiqueta {
-  id            Int       @id @default(autoincrement())
-  nombre        String    @unique @db.VarChar(50)
-  createdAt     DateTime  @default(now()) @map("created_at")
-
-  publicaciones PublicacionEtiqueta[]
-
-  @@map("etiquetas")
-}
-
-model PublicacionEtiqueta {
-  publicacionId Int       @map("publicacion_id")
-  etiquetaId    Int       @map("etiqueta_id")
-
-  publicacion   Publicacion @relation(fields: [publicacionId], references: [id], onDelete: Cascade)
-  etiqueta      Etiqueta    @relation(fields: [etiquetaId], references: [id], onDelete: Cascade)
-
-  @@id([publicacionId, etiquetaId])
-  @@map("publicacion_etiquetas")
-}
-
-model Puja {
-  id                  Int         @id @default(autoincrement())
-  publicacionId       Int         @map("publicacion_id")
-  usuarioOfertanteId  Int         @map("usuario_ofertante_id")
-  mensaje             String?     @db.Text
-  estado              EstadoPuja  @default(pendiente)
-  createdAt           DateTime    @default(now()) @map("created_at")
-  updatedAt           DateTime    @updatedAt @map("updated_at")
-
-  publicacion         Publicacion @relation(fields: [publicacionId], references: [id], onDelete: Cascade)
-  usuarioOfertante    User        @relation(fields: [usuarioOfertanteId], references: [id], onDelete: Cascade)
-  items               PujaItem[]
-  trueque             Trueque?
-
-  @@index([publicacionId])
-  @@index([usuarioOfertanteId])
-  @@index([estado])
-  @@map("pujas")
-}
-
 enum EstadoPuja {
   pendiente
   ganadora
@@ -175,48 +281,9 @@ enum EstadoPuja {
   cancelada
 }
 
-model PujaItem {
-  id                    Int           @id @default(autoincrement())
-  pujaId                Int           @map("puja_id")
-  publicacionOfrecidaId Int?          @map("publicacion_ofrecida_id")
-  descripcionServicio   String?       @map("descripcion_servicio") @db.Text
-  tipoOferta            TipoOferta    @map("tipo_oferta")
-
-  puja                  Puja          @relation(fields: [pujaId], references: [id], onDelete: Cascade)
-  publicacionOfrecida   Publicacion?  @relation(fields: [publicacionOfrecidaId], references: [id], onDelete: SetNull)
-
-  @@index([pujaId])
-  @@map("puja_items")
-}
-
 enum TipoOferta {
   publicacion_existente
   servicio_nuevo
-}
-
-model Trueque {
-  id                  Int             @id @default(autoincrement())
-  publicacionId       Int             @map("publicacion_id")
-  pujaGanadoraId      Int             @unique @map("puja_ganadora_id")
-  usuarioPublicadorId Int             @map("usuario_publicador_id")
-  usuarioOfertanteId  Int             @map("usuario_ofertante_id")
-  estado              EstadoTrueque   @default(acordado)
-  fechaAcuerdo        DateTime        @default(now()) @map("fecha_acuerdo")
-  fechaCompletado     DateTime?       @map("fecha_completado")
-  createdAt           DateTime        @default(now()) @map("created_at")
-
-  publicacion         Publicacion     @relation(fields: [publicacionId], references: [id], onDelete: Cascade)
-  pujaGanadora        Puja            @relation(fields: [pujaGanadoraId], references: [id], onDelete: Cascade)
-  usuarioPublicador   User            @relation("PublicadorRelation", fields: [usuarioPublicadorId], references: [id], onDelete: Cascade)
-  usuarioOfertante    User            @relation("OfertanteRelation", fields: [usuarioOfertanteId], references: [id], onDelete: Cascade)
-  calificaciones      Calificacion[]
-  mensajes            Mensaje[]
-
-  @@index([publicacionId])
-  @@index([estado])
-  @@index([usuarioPublicadorId])
-  @@index([usuarioOfertanteId])
-  @@map("trueques")
 }
 
 enum EstadoTrueque {
@@ -226,59 +293,6 @@ enum EstadoTrueque {
   en_disputa
 }
 
-model Calificacion {
-  id              Int       @id @default(autoincrement())
-  truequeId       Int       @map("trueque_id")
-  calificadorId   Int       @map("calificador_id")
-  calificadoId    Int       @map("calificado_id")
-  estrellas       Int       @db.TinyInt
-  comentario      String?   @db.Text
-  createdAt       DateTime  @default(now()) @map("created_at")
-
-  trueque         Trueque   @relation(fields: [truequeId], references: [id], onDelete: Cascade)
-  calificador     User      @relation("CalificadorRelation", fields: [calificadorId], references: [id], onDelete: Cascade)
-  calificado      User      @relation("CalificadoRelation", fields: [calificadoId], references: [id], onDelete: Cascade)
-
-  @@unique([truequeId, calificadorId])
-  @@index([calificadoId])
-  @@map("calificaciones")
-}
-
-model Mensaje {
-  id          Int       @id @default(autoincrement())
-  truequeId   Int       @map("trueque_id")
-  emisorId    Int       @map("emisor_id")
-  contenido   String    @db.Text
-  leido       Boolean   @default(false)
-  createdAt   DateTime  @default(now()) @map("created_at")
-
-  trueque     Trueque   @relation(fields: [truequeId], references: [id], onDelete: Cascade)
-  emisor      User      @relation(fields: [emisorId], references: [id], onDelete: Cascade)
-
-  @@index([truequeId])
-  @@index([createdAt])
-  @@index([truequeId, leido])
-  @@map("mensajes")
-}
-
-model Notificacion {
-  id          Int               @id @default(autoincrement())
-  usuarioId   Int               @map("usuario_id")
-  tipo        TipoNotificacion
-  titulo      String            @db.VarChar(200)
-  contenido   String?           @db.Text
-  urlDestino  String?           @map("url_destino") @db.VarChar(500)
-  leida       Boolean           @default(false)
-  createdAt   DateTime          @default(now()) @map("created_at")
-
-  usuario     User              @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
-
-  @@index([usuarioId])
-  @@index([usuarioId, leida])
-  @@index([createdAt])
-  @@map("notificaciones")
-}
-
 enum TipoNotificacion {
   puja_recibida
   puja_ganadora
@@ -286,26 +300,6 @@ enum TipoNotificacion {
   mensaje
   calificacion
   recordatorio
-}
-
-model Reporte {
-  id                     Int             @id @default(autoincrement())
-  reportadorId           Int             @map("reportador_id")
-  usuarioReportadoId     Int?            @map("usuario_reportado_id")
-  publicacionReportadaId Int?            @map("publicacion_reportada_id")
-  tipo                   TipoReporte
-  motivo                 String          @db.Text
-  estado                 EstadoReporte   @default(pendiente)
-  resolucion             String?         @db.Text
-  createdAt              DateTime        @default(now()) @map("created_at")
-  updatedAt              DateTime        @updatedAt @map("updated_at")
-
-  reportador             User            @relation("ReportadorRelation", fields: [reportadorId], references: [id], onDelete: Cascade)
-  usuarioReportado       User?           @relation("ReportadoRelation", fields: [usuarioReportadoId], references: [id], onDelete: SetNull)
-
-  @@index([estado])
-  @@index([tipo])
-  @@map("reportes")
 }
 
 enum TipoReporte {
