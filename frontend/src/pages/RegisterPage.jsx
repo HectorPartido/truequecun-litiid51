@@ -1,6 +1,11 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext"
 
 export default function RegisterPage() {
+  const { login } = useAuth()
+  const navigate = useNavigate()
+
   const [form, setForm] = useState({
     nombre: '',
     email: '',
@@ -25,7 +30,12 @@ export default function RegisterPage() {
     setLoading(true)
     setTimeout(() => {
       setLoading(false)
-      alert('Registro enviado: ' + form.email)
+      login({
+        nombre: form.nombre,
+        email: form.email,
+        ciudad: form.ciudad
+      })
+      navigate('/home')
     }, 1000)
   }
 

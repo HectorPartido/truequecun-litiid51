@@ -9,6 +9,8 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ProfileHistoryPage from './pages/Profile/ProfileHistoryPage'
 import ProfilePublicationsPage from './pages/Profile/ProfilePublicationsPage'
 import ProfileReviewsPage from './pages/Profile/ProfileReviewsPage'
+import HomePage from './pages/HomePage'
+import CreatePublicationPage from './pages/CreatePublicationPage'
 
 function App() {
   return (
@@ -23,7 +25,8 @@ function App() {
         <Route path="/profile/reviews" element={<ProfileReviewsPage />} />
         <Route path="/profile/history" element={<ProfileHistoryPage />} />
         <Route path="/profile/publications" element={<ProfilePublicationsPage />} />
-
+        <Route path="/home" element={<HomePage/>} />
+        <Route path="/create" element={<CreatePublicationPage/>} />
       </Routes>
     </BrowserRouter>
   )
