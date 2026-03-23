@@ -6,7 +6,13 @@ export default function Sidebar() {
     const location = useLocation()
     const { usuario } = useAuth()
 
-    const isActive = (path) => location.pathname === path
+    const isActive = (path) => {
+        if (path === '/profile/publications') {
+            return location.pathname.startsWith('/profile')
+        }
+
+        return location.pathname === path
+    }
 
     const navItem = (label, path) => (
         <button
